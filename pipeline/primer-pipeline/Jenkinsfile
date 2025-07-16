@@ -1,0 +1,41 @@
+pipeline{
+    agent any
+    environment {
+        FACEBOOK="@fsialer"
+    }
+    stages{
+        stage("Saludo"){
+            steps{
+                echo "Hola desde saludo"
+            }
+        }
+        stage("saludo 2"){
+            steps{
+                echo "Hola desde saludo2 pase 1 "
+                echo "Hola desde saludo2 pase 2 "
+            }
+        }
+        stage("imprimir variable de entorno"){
+            steps{
+                echo "${env.FACEBOOK}"
+                echo "${FACEBOOK}"
+                echo "$FACEBOOK"
+                sh "echo 'hola-mundo'" # sh = ejecuta un comando shell
+                sh "echo ${env.FACEBOOK}"
+                sh "echo ${FACEBOOK}"
+                sh "echo $FACEBOOK"
+            }
+        }
+        stage("Imprimir variable de entorno de syste,"){
+            steps{
+                echo "${env.INSTAGRAM}"
+                echo "${INSTAGRAM}"
+                echo "INSTAGRAM"
+                echo "======================="
+                sh "echo ${env.INSTAGRAM}"
+                sh "echo ${INSTAGRAM}"
+                sh """echo $INSTAGRAM"""
+            }
+        }
+    }
+}

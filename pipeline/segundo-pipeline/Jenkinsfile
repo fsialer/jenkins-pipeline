@@ -1,0 +1,65 @@
+pipeline{
+    agent any
+    parameters {
+        string(name: 'APELLIDO', description: 'Ingrese su apellido')
+        text(name: 'BIOGRAFIA', description: 'Ingrese su biografía')
+        booleanParam(name: 'BOOLEANO', description: 'Parámetro booleano')
+        choice(name: 'CUIDADES', choices: ['Lima', 'Chiclayo', 'Lambayeque'], description: 'Ciudades disponibles')
+        password(name: 'CONTRASENIA', description: 'Ingrese su contraseña')
+    }
+    environment {
+        FACEBOOK="@fsialer"
+    }
+    stages{
+        stage("Saludo"){
+            steps{
+                echo "Hola desde saludo"
+            }
+        }
+        stage("saludo 2"){
+            steps{
+                echo "Hola desde saludo2 pase 1 "
+                echo "Hola desde saludo2 pase 2 "
+            }
+        }
+        stage("imprimir variable de entorno"){
+            steps{
+                echo "${env.FACEBOOK}"
+                echo "${FACEBOOK}"
+                echo "$FACEBOOK"
+                echo "======================="
+                sh "echo 'hola-mundo'"
+                sh "echo ${env.FACEBOOK}"
+                sh "echo ${FACEBOOK}"
+                sh "echo $FACEBOOK"
+            }
+        }
+        stage("Imprimir variable de entorno de syste,"){
+            steps{
+                echo "${env.INSTAGRAM}"
+                echo "${INSTAGRAM}"
+                echo "INSTAGRAM"
+                echo "======================="
+                sh "echo ${env.INSTAGRAM}"
+                sh "echo ${INSTAGRAM}"
+                sh """echo $INSTAGRAM"""
+            }
+        }
+        stage("cambio de valor"){
+            steps{
+                script {
+                     FACEBOOK="@prueba"
+                      echo "${FACEBOOK}"
+                }
+            }
+        }
+        stage("imprimir parametros"){
+            steps{
+                echo "${params.APELLIDO}"
+                echo "${APELLIDO}"
+                sh """echo ${APELLIDO}"""
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,53 @@
+pipeline{
+    agent any
+    stages{
+        stage("Clear workspace"){
+            steps{
+                script{
+                    deleteDir()
+                }
+            }
+        }
+        stage("Git clone"){
+            steps{
+                /**withCredentials([usernamePassword(credentialsId : 'GITHUB_CREDENTIALS', usernameVariable : 'GITHUB_USERNAME', passwordVariable : 'GITHUB_PASSWORD')]){
+                *    script{
+                *        sh '''
+                *            git clone https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/fsialer/jenkins.git
+                *        '''
+                 *   }
+                *}**/
+                withCredentials([sshUserPrivateKey(credentialsId :'GITHUB_SSH', keyFileVariable: 'SSH_KEY', passphraseVariable: 'SSH_PASSPHASE', usernameVariable: 'SSH_USERNAME')]){
+                    sh '''
+                         #!/bin/bash
+                         set -e
+                         mkdir -p ~/.ssh
+                        
+                         # Forzar escritura de known_hosts con la clave de ssh.github.com
+                         ssh-keyscan -p 443 ssh.github.com > ~/.ssh/known_hosts
+                         chmod 600 ~/.ssh/known_hosts
+                         eval "$(ssh-agent -s)"
+                         echo $SSH_PASSPHASE
+                         echo "$SSH_PASSPHASE" | ssh-add "$SSH_KEY"
+                         git clone ssh://git@ssh.github.com:443/${SSH_USERNAME}/jenkins.git
+                    '''
+                }
+            }
+        }
+        stage("Trigger job"){
+            steps{
+                script{
+                    build job: 'Quinto-pipeline', parameters:[
+                            string(name: 'NOMBRE_PIPELINE', value: "$JOB_NAME"),
+                            string(name: 'ID_JOB', value: "$BUILD_ID")
+                        ]
+                }
+            }
+        }
+    }
+}
+/**
+ssh-keygen -t rsa -b 4096 -m PEM -f ~/.ssh/id_rsa_jenkins // Generar una clave directamente en formato PEM
+ssh-keygen -p -m PEM -f ~/.ssh/id_ed25519 // Para generar el PEM en un llave ssh ya generada
+
+*/
