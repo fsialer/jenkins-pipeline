@@ -20,7 +20,7 @@ pipeline{
                 echo "${env.FACEBOOK}"
                 echo "${FACEBOOK}"
                 echo "$FACEBOOK"
-                sh "echo 'hola-mundo'" # sh = ejecuta un comando shell
+                sh "echo 'hola-mundo'"
                 sh "echo ${env.FACEBOOK}"
                 sh "echo ${FACEBOOK}"
                 sh "echo $FACEBOOK"
